@@ -24,7 +24,7 @@ public:
 	
 
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemCompoent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;

@@ -23,49 +23,52 @@ void UOverlayWidgetController::BindCallbacksToDependencoes()
 {
 	const UAuraAttributeSet* AuraAttribute= CastChecked<UAuraAttributeSet>(Attributes);
 
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetHealthAttribute()).AddUObject(this,&UOverlayWidgetController::HealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetHealthAttribute()).AddLambda(
+     [this](const FOnAttributeChangeData& Data)
+     {
+     	OnHealthChanged.Broadcast(Data.NewValue);
+     }
+	);
 
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetMaxHealthAttribute()).AddUObject(this,&UOverlayWidgetController::MaxHealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetMaxHealthAttribute()).AddLambda(
+ [this](const FOnAttributeChangeData& Data)
+  {
+	 OnMaxHealthChanged.Broadcast(Data.NewValue);
+  }
+  );
 
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetManaAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+  {
+	OnManaChanged.Broadcast(Data.NewValue);
+  }
+  );
 
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetManaAttribute()).AddUObject(this,&UOverlayWidgetController::ManaChanged);
-
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetMaxManaAttribute()).AddUObject(this,&UOverlayWidgetController::MaxManaChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetMaxManaAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+  {
+    OnMaxManaChanged.Broadcast(Data.NewValue);
+  }
+  );
+	
 
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
 
-	  [](const FGameplayTagContainer& AssetTags)
+	  [this](const FGameplayTagContainer& AssetTags)
 	  {
 	  	for(const auto& tag:AssetTags)
 	  	{
 			 
-			  const FString Msg = FString::Printf(TEXT("GE Tag: %s"),*tag.ToString());
-
-			  GEngine->AddOnScreenDebugMessage(-1,8.f,FColor::Blue,Msg);
+			  FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+               if(tag.MatchesTag(MessageTag))
+               {
+	               const FUIWidgetRow* Row=GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable,tag);
+				   MessageWidgetRowDelegate.Broadcast(*Row);
+               }
 		  }
 	  }
 	);
 	
 }
 
-void UOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data) const
-{
 
-	OnHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data) const
-{
-
-	OnMaxHealthChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::ManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnManaChanged.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxManaChanged.Broadcast(Data.NewValue);
-}
