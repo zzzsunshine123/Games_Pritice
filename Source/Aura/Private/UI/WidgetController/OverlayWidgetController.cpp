@@ -19,7 +19,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxManaChanged.Broadcast(AuraAttribute->GetMaxMana());
 }
 
-void UOverlayWidgetController::BindCallbacksToDependencoes()
+void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	const UAuraAttributeSet* AuraAttribute= CastChecked<UAuraAttributeSet>(Attributes);
 

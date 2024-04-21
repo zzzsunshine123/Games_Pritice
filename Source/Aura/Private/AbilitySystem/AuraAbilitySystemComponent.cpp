@@ -4,11 +4,13 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "Chaos/ChaosPerfTest.h"
-
+#include "AuraGameplayTags.h"
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
 
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this,&UAuraAbilitySystemComponent::EffectApplied);
+
+	 
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
@@ -16,7 +18,7 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
 {
 	FGameplayTagContainer TagContainer;
 
-	EffectSpec.GetAllAssetTags(TagContainer);
+	EffectSpec.GetAllAssetTags(TagContainer); 
 
 	EffectAssetTags.Broadcast(TagContainer);
 	
