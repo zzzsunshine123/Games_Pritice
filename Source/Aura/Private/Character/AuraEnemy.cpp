@@ -9,9 +9,9 @@
 AAuraEnemy::AAuraEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
-	AbilitySystemCompoent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
-    AbilitySystemCompoent->SetIsReplicated(true);
-	AbilitySystemCompoent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
+    AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	
 	
@@ -47,7 +47,7 @@ void AAuraEnemy::BeginPlay()
 
 void AAuraEnemy::InitAbilityActorInfo()
 {
-	AbilitySystemCompoent->InitAbilityActorInfo(this,this);
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 
-	Cast<UAuraAbilitySystemComponent>(AbilitySystemCompoent)->AbilityActorInfoSet();
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }

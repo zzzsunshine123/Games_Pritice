@@ -12,6 +12,9 @@
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+
+template<class T>
+using TAttributeFunPtr = typename TBaseStaticDelegateInstance<T,FDefaultDelegateUserPolicy>::FFuncPtr;
 /**
  * 
  */
@@ -50,6 +53,10 @@ public:
 	virtual  void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
+	TMap<FGameplayTag,TAttributeFunPtr<FGameplayAttribute()> > TagsToAttributes;
+
+	
 
 	//Secondary Attributes
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Armor,Category="Secondary Atttibutes")
