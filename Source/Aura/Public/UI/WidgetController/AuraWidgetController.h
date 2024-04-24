@@ -58,5 +58,5 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadOnly,Category="WidgetController")
-	TObjectPtr<UAttributeSet> Attributes;
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

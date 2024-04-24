@@ -8,7 +8,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 void UOverlayWidgetController::BroadcastInitialValues()
 {
-	const UAuraAttributeSet* AuraAttribute= CastChecked<UAuraAttributeSet>(Attributes);
+	const UAuraAttributeSet* AuraAttribute= CastChecked<UAuraAttributeSet>(AttributeSet);
 
 	OnHealthChanged.Broadcast(AuraAttribute->GetHealth());
 
@@ -21,7 +21,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	const UAuraAttributeSet* AuraAttribute= CastChecked<UAuraAttributeSet>(Attributes);
+	const UAuraAttributeSet* AuraAttribute= CastChecked<UAuraAttributeSet>(AttributeSet);
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttribute->GetHealthAttribute()).AddLambda(
      [this](const FOnAttributeChangeData& Data)
