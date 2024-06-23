@@ -27,6 +27,11 @@ public:
  FGameplayTag Attributes_Secondary_MaxHealth;
  FGameplayTag Attributes_Secondary_MaxMana;
 
+ FGameplayTag Attributes_Resistance_Fire;
+ FGameplayTag Attributes_Resistance_Lightning;
+ FGameplayTag Attributes_Resistance_Arcane;
+ FGameplayTag Attributes_Resistance_Physical;
+
  //Vital Attributes
  FGameplayTag Attributes_Vital_Health;
  FGameplayTag Attributes_Vital_Mana;
@@ -50,6 +55,12 @@ public:
 
  FGameplayTag Damege;
 
+ FGameplayTag Damege_Fire;
+ FGameplayTag Damege_Lightning;
+ FGameplayTag Damege_Arance;
+ FGameplayTag Damege_Physical;
+ 
+TMap<FGameplayTag,FGameplayTag>DamageTypesToResistance;
 
  FGameplayTag Effects_HitReact;
 protected:

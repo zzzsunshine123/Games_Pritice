@@ -98,6 +98,23 @@ public:
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_MaxHealth,Category="Secondray Atttibutes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,MaxHealth);
+
+	//Resistance
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Resistance_Fire,Category="Resistance Atttibutes")
+	FGameplayAttributeData Resistance_Fire;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,Resistance_Fire);
+
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Resistance_Lightning,Category="Resistance Atttibutes")
+	FGameplayAttributeData Resistance_Lightning;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,Resistance_Lightning);
+
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Resistance_Arcane,Category="Resistance Atttibutes")
+	FGameplayAttributeData Resistance_Arcane;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,Resistance_Arcane);
+
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Resistance_Physical,Category="Resistance Atttibutes")
+	FGameplayAttributeData Resistance_Physical;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,Resistance_Physical);
 	
 	
     //Strength Intelligence Resilience  Vigor
@@ -181,8 +198,20 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Fire(const FGameplayAttributeData& OldResistanceFire) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Lightning(const FGameplayAttributeData& OldResistanceLightning) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Arcane(const FGameplayAttributeData& OldResistanceArcane) const;
+	
+	UFUNCTION()
+	void OnRep_Resistance_Physical(const FGameplayAttributeData& OldResistancePhysical) const;
 	
 private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData&Data,FEffectProperties& Props)const;
-	void ShowFloatingText(const FEffectProperties& Props,float Damage)const ;
+	void ShowFloatingText(const FEffectProperties& Props,float Damage,bool bBlockedHit,bool bCriticalHit)const ;
 };
