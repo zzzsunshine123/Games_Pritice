@@ -53,12 +53,20 @@ public:
  FGameplayTag InputTag_3;
  FGameplayTag InputTag_4;
 
- FGameplayTag Damege;
+ FGameplayTag Damage;
 
- FGameplayTag Damege_Fire;
- FGameplayTag Damege_Lightning;
- FGameplayTag Damege_Arance;
- FGameplayTag Damege_Physical;
+ FGameplayTag Damage_Fire;
+ FGameplayTag Damage_Lightning;
+ FGameplayTag Damage_Arcane;
+ FGameplayTag Damage_Physical;
+
+
+ FGameplayTag Abilities_Attack;
+
+ FGameplayTag Montage_Attack_Weapon;
+ FGameplayTag Montage_Attack_RightHand;
+ FGameplayTag Montage_Attack_LeftHand;
+ 
  
 TMap<FGameplayTag,FGameplayTag>DamageTypesToResistance;
 

@@ -3,6 +3,7 @@
 
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 // Sets default values
@@ -51,6 +52,7 @@ void AAuraCharacterBase::MulticastHandDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
+	bDead=true;
 }
 
 // Called when the game starts or when spawned
@@ -60,9 +62,37 @@ void AAuraCharacterBase::BeginPlay()
 	
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation()
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	const FAuraGameplayTags& GameplayTags=FAuraGameplayTags::Get();
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon)&&IsValid(Weapon))
+	{
+		return Weapon->GetSocketLocation(WeaponTipSocketName);
+	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
+	{
+		return GetMesh()->GetSocketLocation(LeftHandTipSocketName);
+	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
+	{
+		return GetMesh()->GetSocketLocation(RightHandTipSocketName);
+	}
+	return FVector();
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation() 
+{
+	return this;
+}
+
+TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
@@ -93,8 +123,9 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 void AAuraCharacterBase::AddCharacterAbilities()
 {
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	
 	if(!HasAuthority()) return;
-
+	if(AuraASC!=nullptr)
 	AuraASC->AddCharacterAbilities(StartupAbilities);
 }
 

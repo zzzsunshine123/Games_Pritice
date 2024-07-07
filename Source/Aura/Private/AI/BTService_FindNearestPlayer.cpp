@@ -15,7 +15,7 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 
 	APawn* OwningPawn =AIOwner->GetPawn();
 
-	const FName TargetTag=OwningPawn->ActorHasTag(FName("Player"))?FName("Enemy"):FName("Player");
+	const FName TargetTag=OwningPawn->ActorHasTag				(FName("Player"))?FName("Enemy"):FName("Player");
 
 	TArray<AActor*> ActorsWithTag;
 
