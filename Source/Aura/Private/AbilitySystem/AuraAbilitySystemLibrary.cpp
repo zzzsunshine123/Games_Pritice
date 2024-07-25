@@ -95,14 +95,27 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 	const FCharacterClassDefaultInfo& DefaultInfo=CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
    for(auto ability:DefaultInfo.StartupAbilities)
    {
-	   ICombatInterface* CombatInterface=Cast<ICombatInterface>(ASC->GetAvatarActor());
-   	if(CombatInterface)
+	 
+   	if(ASC->GetAvatarActor()->Implements<UCombatInterface>())
    	{
-   		FGameplayAbilitySpec AbilitySpec =FGameplayAbilitySpec(ability,CombatInterface->GetPlayerLevel());
+   		FGameplayAbilitySpec AbilitySpec =FGameplayAbilitySpec(ability,ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor()));
    		ASC->GiveAbility(AbilitySpec);
    	}
    }
 	
+	
+}
+int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject,
+	ECharacterClass CharacterClass, int32 CharacterLevel)
+{
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+	
+	if(CharacterClassInfo==nullptr) return 0;
+
+	const FCharacterClassDefaultInfo& Info=CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+
+	const float XPReward = Info.XPReward.GetValueAtLevel(CharacterLevel);
+	return static_cast<int32>(XPReward);
 	
 }
 
@@ -186,4 +199,6 @@ bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondAc
 	const bool Friends=BothAreEnemies||BothArePlayers;
 	return !Friends;
 }
+
+
 

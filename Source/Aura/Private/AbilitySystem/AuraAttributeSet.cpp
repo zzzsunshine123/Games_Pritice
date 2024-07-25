@@ -8,7 +8,9 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Aura/AuraLogChannels.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/AuraPlayerController.h"
@@ -127,7 +129,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	//Source = caueer of the effect, Target = target of the effect(owner of this AS)
+	//Source = causer of the effect, Target = target of the effect(owner of this AS)
 	FEffectProperties Props;
 	SetEffectProperties(Data,Props);
 	
@@ -159,6 +161,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombatInterface->Die();
 				}
+				SendXPEvent(Props);
 			}
 			else
 			{
@@ -166,12 +169,74 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
-            const bool bBlock =UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
+			const bool bBlock =UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
 			const bool bCritical =UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
 			ShowFloatingText(Props,LocalIncomingDamage,bBlock,bCritical);
 		}
 	}
+
+	if(Data.EvaluatedData.Attribute==GetIncomingXPAttribute())
+	{
+
+		const float LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.f);
+
+
+		//TODO: See if we should level up
+
+
+		if(Props.SourceCharacter->Implements<UPlayerInterface>())
+		{
+			const int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
+			const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+
+			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+			const int32 NumLevelUps = NewLevel - CurrentLevel;
+			if (NumLevelUps > 0)
+			{
+				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
+
+				int32 AttributePointsReward = 0;
+				int32 SpellPointsReward = 0;
+
+				for (int32 i = 0; i < NumLevelUps; ++i)
+				{
+					SpellPointsReward += IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel + i);
+					AttributePointsReward += IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel + i);
+				}
+			
+				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
+				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+
+				SetHealth(GetMaxHealth());
+				SetMana(GetMaxMana());
+			}
+			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter,LocalIncomingXP);
+		
+		}
+	}
 }
+
+void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+   if(Props.TargetCharacter->Implements<UCombatInterface>())
+   {
+	   const int32 level=ICombatInterface::Execute_GetPlayerLevel(Props.TargetCharacter);
+   	const ECharacterClass CharacterClass=ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+
+   	const int32 XPReward=UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter,CharacterClass,level);
+
+   	const FAuraGameplayTags& GameplayTags=FAuraGameplayTags::Get();
+
+   	FGameplayEventData playload;
+
+   	playload.EventTag=GameplayTags.Attributes_Meta_IncomingXP;
+   	playload.EventMagnitude=XPReward;
+   	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter,GameplayTags.Attributes_Meta_IncomingXP,playload);
+   }
+}
+
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage,bool bBlockedHit,bool bCriticalHit) const
 {
 	if(Props.SourceCharacter!=Props.TargetCharacter)
@@ -189,6 +254,7 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 		
 	}
 }
+
 
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
