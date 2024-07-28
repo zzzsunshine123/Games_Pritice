@@ -32,6 +32,13 @@ public:
 
 	FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	void UpGradeAttribute(const FGameplayTag& AttributeTag);
+
+	UFUNCTION(Server,Reliable)
+	void ServerUpGradeAttribute(const FGameplayTag& AttributeTag);
+
+	
 protected:
 	virtual void OnRep_ActivateAbilities() override;
 	UFUNCTION(Client,Reliable)
