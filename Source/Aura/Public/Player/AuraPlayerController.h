@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "NiagaraSystem.h"
+#include "Actor/MagicCircle.h"
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
@@ -29,6 +31,11 @@ public:
 
 	UFUNCTION(Client,Reliable)
 	void ShowDamageNumber(float DamageAmount,ACharacter* TargetCharacter,bool bBlockedHit,bool bCriticalHit);
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial=nullptr);
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -80,8 +87,21 @@ private:
 	TObjectPtr<USplineComponent> Spline;
 
 	void AutoRun();
-
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UNiagaraSystem>ClickNiagaraSystem;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamegeTextComponent> DamageTextComponentClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AMagicCircle>MagicCircleClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<AMagicCircle> MagicCircle;
+
+	void UpdateMagicCircleLocation();
 };
+
+
 

@@ -7,6 +7,7 @@
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "AuraEnemy.generated.h"
 
 class UWidgetComponent;
@@ -36,7 +37,7 @@ public:
 
 	virtual  void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual  AActor* GetCombatTarget_Implementation() const override;
-	virtual  void Die() override;
+	virtual  void Die(FVector DeathImpulse) override;
 	/**end Combat Interface*/
     UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
@@ -49,8 +50,7 @@ public:
 	UPROPERTY(BlueprintReadOnly,Category="combat")
 	bool bHitReacting = false;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="combat")
-	float BaseWalkSpeed =300.f;
+	
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="combat")
 	float LifeSpan =5.f;
@@ -63,6 +63,8 @@ protected:
 	virtual  void BeginPlay() override;
 	void InitAbilityActorInfo()override;
 	virtual  void InitializeDefaultAttributes() const override;
+
+	virtual  void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Character Class Defaults")
 	int32 Level = 1;
 
@@ -78,5 +80,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AAuraAIController>AuraAIController;
+
 
 };

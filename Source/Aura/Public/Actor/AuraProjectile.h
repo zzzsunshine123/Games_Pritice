@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AuraAbilityTypes.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "NiagaraSystem.h"
@@ -22,19 +23,29 @@ public:
     TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
 	UPROPERTY(BlueprintReadWrite,meta=(ExposeOnSpawn=true))
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	FDamageEffectParams DamageEffectParams;
+
+	UPROPERTY()
+	TObjectPtr<USceneComponent>HomingTargetSceneComponent;
+
+	bool IsVaildOverlap(AActor* OtherActor);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
-	UFUNCTION()
-    void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable)
+	virtual void OnHit();
+	UFUNCTION()
+    virtual  void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
+	bool bHit =false;
+	UPROPERTY()
+	TObjectPtr<UAudioComponent>LoopingSoundComponent;
 private:
 
 	UPROPERTY(EditAnywhere)
 	float LifeSpan= 15.f;
-    bool bHit =false;
+   
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
@@ -46,7 +57,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> LoopingSound;
 
-	UPROPERTY()
-	TObjectPtr<UAudioComponent>LoopingSoundComponent;
+
 	
 };

@@ -9,6 +9,11 @@
 #include "CombatInterface.generated.h"
 class UNiagaraSystem;
 class UAnimMontage;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered,UAbilitySystemComponent*)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath,AActor*,DeadActor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature,float /*DamageAmount*/)
+
 USTRUCT(BlueprintType)
 struct FTaggedMontage
 {
@@ -58,7 +63,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
 
-	virtual  void Die()=0;
+	virtual  void Die(FVector DeathImpulse)=0;
 	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	bool IsDead() const;
@@ -82,4 +87,19 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	ECharacterClass GetCharacterClass();
+
+	virtual  FOnDamageSignature& GetOnDamageSignature()=0;
+	
+	virtual FOnASCRegistered& GetOnAscRegisteredDelegate()=0;
+
+	
+	virtual  FOnDeath GetOnDeathDelegate()=0;
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void SetInShockLoop(bool bInLoop);
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	USkeletalMeshComponent* GetWeapon();
+
+	
 };

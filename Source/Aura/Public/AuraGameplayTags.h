@@ -52,6 +52,8 @@ public:
  FGameplayTag InputTag_2;
  FGameplayTag InputTag_3;
  FGameplayTag InputTag_4;
+ FGameplayTag InputTag_Passive_1;
+ FGameplayTag InputTag_Passive_2;
 
  FGameplayTag Damage;
 
@@ -60,12 +62,45 @@ public:
  FGameplayTag Damage_Arcane;
  FGameplayTag Damage_Physical;
 
-
+ FGameplayTag Abilities_None;
+ 
  FGameplayTag Abilities_Attack;
  FGameplayTag Abilities_Summon;
- FGameplayTag Abilities_Fire_FireBolt;
 
+ 	
+ FGameplayTag Abilities_HitReact;
+
+ FGameplayTag Abilities_Status_Locked;
+ FGameplayTag Abilities_Status_Eligible;
+ FGameplayTag Abilities_Status_Unlocked;
+ FGameplayTag Abilities_Status_Equipped;
+
+ FGameplayTag Abilities_Type_Offensive;
+ FGameplayTag Abilities_Type_Passive;
+ FGameplayTag Abilities_Type_None;
+ 
+ FGameplayTag Abilities_Fire_FireBolt;
+ FGameplayTag Abilities_Fire_FireBlast;
+ FGameplayTag Abilities_Lightning_Electrocute;
+ FGameplayTag Abilities_Arcane_ArcaneShards;
+
+ FGameplayTag Ability_Passive_HaloOfProtection;
+ FGameplayTag Ability_Passive_LifeSiphon;
+ FGameplayTag Ability_Passive_ManaSiphon;
+
+ 
  FGameplayTag Cooldown_Fire_FireBolt;
+
+ FGameplayTag Debuff_Burn;
+ FGameplayTag Debuff_Stun;
+ FGameplayTag Debuff_Physical;
+ FGameplayTag Debuff_Arcane;
+ FGameplayTag Debuff_Chance;
+ FGameplayTag Debuff_Frequency;
+ FGameplayTag Debuff_Damage;
+ FGameplayTag Debuff_Duration;
+
+ 
  
  FGameplayTag CombatSocket_Weapon;
  FGameplayTag CombatSocket_RightHand;
@@ -79,9 +114,17 @@ public:
 
  FGameplayTag Attributes_Meta_IncomingXP;
  
-TMap<FGameplayTag,FGameplayTag>DamageTypesToResistance;
+ TMap<FGameplayTag,FGameplayTag>DamageTypesToResistance;
+ TMap<FGameplayTag,FGameplayTag>DamageTypesToDebuff;
 
  FGameplayTag Effects_HitReact;
+
+ FGameplayTag Player_Block_InputPressed;
+ FGameplayTag Player_Block_InputHeld;
+ FGameplayTag Player_Block_InputReleased;
+ FGameplayTag Player_Block_CursorTrace;
+
+ FGameplayTag GameplayCue_FireBlast;
 protected:
  static FAuraGameplayTags GameplayTags;
 };
