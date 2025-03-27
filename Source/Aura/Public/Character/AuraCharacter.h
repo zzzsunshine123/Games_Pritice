@@ -40,7 +40,8 @@ public:
 	virtual  void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial=nullptr) override;
 
 	virtual void HideMagicCircle_Implementation() override;
-	
+
+	virtual  void SaveProgress_Implementation(const FName& CheckPointTag) override;
 	/** end Player Interface*/
 
 	
@@ -60,7 +61,7 @@ private:
 	TObjectPtr<USpringArmComponent> CameraBoom;
 	
 	void InitAbilityActorInfo()override;
-
+    void LoadProgress();
 	UFUNCTION(NetMulticast,Reliable)
 	void MulticastLevelUpParticles()const;
 };

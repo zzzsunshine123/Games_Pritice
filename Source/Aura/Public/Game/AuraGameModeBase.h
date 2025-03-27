@@ -28,6 +28,9 @@ public:
 
 	static void DeleteSlot(FString SlotName,int32 SlotIndex);
 
+	ULoadScreenSaveGame* RetrieveInGameSaveData();
+	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject);
+	
 	void TravelToMap(UMVVM_LoadSlot* Slot);
 	
     ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName,int32 SlotIndex)const;

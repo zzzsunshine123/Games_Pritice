@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerState.h"
 #include "AuraPlayerState.generated.h"
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged,int32 /*StateValue*/)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelChanged,int32 /*StateValue*/,bool /*bLevelUp*/)
 class UAbilitySystemComponent;
 class UAttributeSet;
 /**
@@ -28,12 +29,13 @@ public:
 	TObjectPtr<ULevelUpInfo>LevelUpInfo;
 	
     FOnPlayerStateChanged OnXPChangedDelegate;
-	FOnPlayerStateChanged OnLevelChangedDelegate;
+	FOnLevelChanged OnLevelChangedDelegate;
 	FOnPlayerStateChanged OnAttributePointsChangedDelegate;
 	FOnPlayerStateChanged OnSpellPointsChangedDelegate;
 	
 	int32 GetPlayerLevel()const;
 	void SetLevel(int inLevel);
+
 	void AddToLevel(int inLevel);
 	
 	void SetXP(int inXP);

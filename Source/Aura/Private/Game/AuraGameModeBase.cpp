@@ -30,6 +30,30 @@ void AAuraGameModeBase::DeleteSlot(FString SlotName, int32 SlotIndex)
 
 }
 
+ULoadScreenSaveGame* AAuraGameModeBase::RetrieveInGameSaveData()
+{
+	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
+	const FString InGameLoadSlotName = AuraGameInstance->LoadSlotName;
+	const int32 InGameLoadSlotIndex = AuraGameInstance->LoadSlotIndex;
+
+	ULoadScreenSaveGame* SaveData=GetSaveSlotData(InGameLoadSlotName,InGameLoadSlotIndex);
+	return SaveData;
+	
+}
+
+
+
+void AAuraGameModeBase::SaveInGameProgressData(ULoadScreenSaveGame* SaveObject)
+{
+	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
+
+	const FString InGameLoadSlotName = AuraGameInstance->LoadSlotName;
+	const int32 InGameLoadSlotIndex = AuraGameInstance->LoadSlotIndex;
+	AuraGameInstance->PlayerStartTag = SaveObject->PlayerStartTag;
+
+	UGameplayStatics::SaveGameToSlot(SaveObject, InGameLoadSlotName, InGameLoadSlotIndex);
+}
+
 void AAuraGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 {
 	const FString SlotName = Slot->GetLoadSlotName();
@@ -41,19 +65,17 @@ void AAuraGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 
 ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const
 {
-	USaveGame* SaveGameObject =nullptr;
-	if (UGameplayStatics::DoesSaveGameExist(SlotName,SlotIndex))
+	USaveGame* SaveGameObject = nullptr;
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
 	{
-		SaveGameObject=UGameplayStatics::LoadGameFromSlot(SlotName,SlotIndex);
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot(SlotName, SlotIndex);
 	}
 	else
 	{
-		SaveGameObject=UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
+		SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
 	}
-
-	ULoadScreenSaveGame* LoadScreenSaveSlotData=Cast<ULoadScreenSaveGame>(SaveGameObject);
-
-	return LoadScreenSaveSlotData;
+	ULoadScreenSaveGame* LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
+	return LoadScreenSaveGame;
 	
 }
 
